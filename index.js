@@ -3,7 +3,7 @@ import 'dotenv/config';
 const { ApolloServer } = require('apollo-server-express');
 const schema = require('./graphql/schema');
 const resolvers = require('./graphql/resolvers');
-const models = require('./graphql/models');
+const { models, sequelize } = require('./graphql/models');
 
 const app = express();
 
@@ -17,6 +17,8 @@ const server = new ApolloServer({
 
 server.applyMiddleware({ app, path: '/graphql' });
 
-app.listen({ port: 8000 }, () => {
-  console.log('Apollo Server on http://localhost:8000/graphql');
+sequelize.sync().then(async () => {
+  app.listen({ port: 8000 }, () => {
+    console.log('Apollo Server on http://localhost:8000/graphql');
+  });
 });

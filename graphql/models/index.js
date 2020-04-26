@@ -1,30 +1,23 @@
-//temp data - this would become the root of all models connected to db
-let users = {
-    1: {
-        id: '1',
-        username: 'Robin Wieruch',
-    },
-    2: {
-        id: '2',
-        username: 'Dave Davids',
-    },
-};
-const me = users[1];
+const Sequelize = require('sequelize');
 
-let messages = {
-    1: {
-        id: '1',
-        text: 'Hello World',
-        userId: '1',
+const sequelize = new Sequelize(
+    process.env.DATABASE,
+    process.env.DATABASE_USER,
+    process.env.DATABASE_PASSWORD,
+    {
+        dialect: 'postgres',
     },
-    2: {
-        id: '2',
-        text: 'By World',
-        userId: '2',
-    },
+);
+
+const models = {
+    User: sequelize.import('./user'),
+    Message: sequelize.import('./message'),
 };
 
-module.exports = {
-    users,
-    messages,
-};
+Object.keys(models).forEach(key => {
+    if ('associate' in models[key]) {
+        models[key].associate(models);
+    }
+});
+
+module.exports = { sequelize, models };
