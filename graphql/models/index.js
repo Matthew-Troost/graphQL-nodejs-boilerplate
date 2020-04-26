@@ -1,4 +1,4 @@
-//temp data
+//temp data - this would become the root of all models connected to db
 let users = {
     1: {
         id: '1',
