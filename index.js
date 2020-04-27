@@ -1,11 +1,25 @@
-const express = require('express');
 require('dotenv/config');
-const { ApolloServer } = require('apollo-server-express');
+const express = require('express');
+import jwt from 'jsonwebtoken';
+const { ApolloServer, AuthenticationError } = require('apollo-server-express');
 const schema = require('./graphql/schema');
 const resolvers = require('./graphql/resolvers');
 const { models, sequelize } = require('./graphql/models');
 
 const app = express();
+
+const getMe = async req => {
+  const token = req.headers['x-token'];
+  if (token) {
+    try {
+      return await jwt.verify(token, process.env.SECRET);
+    } catch (e) {
+      throw new AuthenticationError(
+        'Your session expired. Sign in again.',
+      );
+    }
+  }
+};
 
 const server = new ApolloServer({
   typeDefs: schema,
@@ -21,11 +35,14 @@ const server = new ApolloServer({
       message,
     };
   },
-  context: async () => ({ //this function is hit everytime a request is made to the server
-    models,
-    me: await models.User.findByLogin('rwieruch'),
-    secret: process.env.SECRET,
-  }),
+  context: async ({ req }) => { //this function is hit everytime a request is made to the server 
+    const me = await getMe(req); //this still allows request with no token. Only throws error if token is invalid or expired
+    return {
+      models,
+      me,
+      secret: process.env.SECRET,
+    };
+  },
 });
 
 server.applyMiddleware({ app, path: '/graphql' });
