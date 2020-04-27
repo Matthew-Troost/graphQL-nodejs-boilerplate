@@ -11,7 +11,8 @@ extend type Query {
   #----- FIELDS -----
   type User {
     id: ID!
-    username: String!
+    username: String!,
+    messages: [Message!]
   }
 `;
 
