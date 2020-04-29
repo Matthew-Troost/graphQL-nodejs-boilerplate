@@ -69,6 +69,7 @@ const seedDatabase = async () => {
       messages: [
         {
           text: 'Published the Road to learn React',
+          createdAt: new Date()
         },
       ],
     },
@@ -84,9 +85,11 @@ const seedDatabase = async () => {
       messages: [
         {
           text: 'Happy to release ...',
+          createdAt: new Date()
         },
         {
           text: 'Published a complete ...',
+          createdAt: new Date()
         },
       ],
     },

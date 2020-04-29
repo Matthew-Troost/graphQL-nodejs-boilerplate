@@ -15,6 +15,7 @@ extend type Query {
   type Message {
     id: ID!
     text: String!
+    createdAt: Date!
     user: User!  #Use the whole entity rather than an identifier
   }
 `;
