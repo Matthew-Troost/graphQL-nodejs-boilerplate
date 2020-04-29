@@ -5,7 +5,8 @@ const user = gql`
 extend type Query {
     users: [User!]
     user(id: ID!): User
-    me: User
+    me: User,
+    role: String
   }
 
   extend type Mutation {
@@ -16,6 +17,8 @@ extend type Query {
     ): Token!
     
     signIn(login: String!, password: String!): Token!
+
+    deleteUser(id: ID!): Boolean!
   }
 
   #----- FIELDS -----

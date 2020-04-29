@@ -1,6 +1,6 @@
 require('dotenv/config');
 const express = require('express');
-import jwt from 'jsonwebtoken';
+const jwt = require('jsonwebtoken');
 const { ApolloServer, AuthenticationError } = require('apollo-server-express');
 const schema = require('./graphql/schema');
 const resolvers = require('./graphql/resolvers');
@@ -65,6 +65,7 @@ const seedDatabase = async () => {
       username: 'rwieruch',
       email: 'hello@robin.com',
       password: 'rwieruch',
+      role: 'ADMIN',
       messages: [
         {
           text: 'Published the Road to learn React',
