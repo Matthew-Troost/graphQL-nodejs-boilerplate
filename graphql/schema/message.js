@@ -1,4 +1,4 @@
-const { gql } = require( 'apollo-server-express');
+const { gql } = require('apollo-server-express');
 
 //schema =  all the available data for reading and writing data via GraphQL.
 const user = gql`
@@ -10,6 +10,9 @@ extend type Query {
     createMessage(text: String!): Message!
     deleteMessage(id: ID!): Boolean!
   }
+  extend type Subscription {
+    messageCreated: MessageCreated!
+  }
 
   #----- FIELDS -----
   type Message {
@@ -17,6 +20,9 @@ extend type Query {
     text: String!
     createdAt: Date!
     user: User!  #Use the whole entity rather than an identifier
+  }
+  type MessageCreated {
+    message: Message!
   }
 `;
 

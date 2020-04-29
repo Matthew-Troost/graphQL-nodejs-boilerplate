@@ -1,5 +1,6 @@
 require('dotenv/config');
 const express = require('express');
+const http = require('http');
 const jwt = require('jsonwebtoken');
 const { ApolloServer, AuthenticationError } = require('apollo-server-express');
 const schema = require('./graphql/schema');
@@ -35,17 +36,28 @@ const server = new ApolloServer({
       message,
     };
   },
-  context: async ({ req }) => { //this function is hit everytime a request is made to the server 
-    const me = await getMe(req); //this still allows request with no token. Only throws error if token is invalid or expired
-    return {
-      models,
-      me,
-      secret: process.env.SECRET,
-    };
+  context: async ({ req, connection }) => { //this function is hit everytime a request is made to the server 
+    if (connection) {
+      return {
+        models,
+      };
+    }
+
+    if (req) {
+      const me = await getMe(req); //this still allows request with no token. Only throws error if token is invalid or expired
+      return {
+        models,
+        me,
+        secret: process.env.SECRET,
+      };
+    }
   },
 });
 
 server.applyMiddleware({ app, path: '/graphql' });
+
+const httpServer = http.createServer(app);
+server.installSubscriptionHandlers(httpServer);
 
 const eraseDatabaseOnSync = true; //this should only be true in development to spin up a fresh database
 
@@ -54,7 +66,7 @@ sequelize.sync({ force: eraseDatabaseOnSync }).then(async () => {
     seedDatabase();
   }
 
-  app.listen({ port: 8000 }, () => {
+  httpServer.listen({ port: 8000 }, () => {
     console.log('Apollo Server on http://localhost:8000/graphql');
   });
 });

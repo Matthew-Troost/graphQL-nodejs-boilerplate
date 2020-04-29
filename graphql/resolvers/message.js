@@ -1,5 +1,6 @@
 const { combineResolvers } = require('graphql-resolvers');
 const { isAuthenticated, isMessageOwner } = require('./authorization');
+const { pubsub, EVENTS } = require('../subscriptions');
 
 //resolver map
 //each resolver has 4 arguments (parent, args, context, info). 
@@ -17,19 +18,28 @@ const resolvers = {
         createMessage: combineResolvers(
             isAuthenticated,
             async (parent, { text }, { models, me }) => {
-                return await models.Message.create({
+                const message = await models.Message.create({
                     text,
                     userId: me.id,
                 });
+                pubsub.publish(EVENTS.MESSAGE.CREATED, {
+                    messageCreated: { message },
+                });
+                return message;
             },
         ),
         deleteMessage: combineResolvers(
             isAuthenticated,
             isMessageOwner,
             async (parent, { id }, { models }) => {
-              return await models.Message.destroy({ where: { id } });
+                return await models.Message.destroy({ where: { id } });
             },
-          ),
+        ),
+    },
+    Subscription: {
+        messageCreated: {
+            subscribe: () => pubsub.asyncIterator(EVENTS.MESSAGE.CREATED),
+        },
     },
 
     //field level resolvers
