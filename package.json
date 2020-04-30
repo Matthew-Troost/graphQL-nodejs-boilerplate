@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index",
-    "test-server": "TEST_DATABASE=mytestdatabase npm start",
+    "test-server": "TEST_DATABASE=circleci npm start",
     "test": "mocha --require @babel/register 'src/**/*.spec.js'"
   },
   "keywords": [],
