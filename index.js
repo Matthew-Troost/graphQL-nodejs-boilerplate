@@ -2,11 +2,12 @@ require('dotenv/config');
 const express = require('express');
 const http = require('http');
 const jwt = require('jsonwebtoken');
+const DataLoader = require('dataloader');
 const { ApolloServer, AuthenticationError } = require('apollo-server-express');
 const schema = require('./graphql/schema');
 const resolvers = require('./graphql/resolvers');
 const { models, sequelize } = require('./graphql/models');
-
+const loaders = require('./graphql/loaders');
 const app = express();
 
 const getMe = async req => {
@@ -20,6 +21,17 @@ const getMe = async req => {
       );
     }
   }
+};
+
+const batchUsers = async (keys, models) => {
+  const users = await models.User.findAll({
+    where: {
+      id: {
+        $in: keys,
+      },
+    },
+  });
+  return keys.map(key => users.find(user => user.id === key));
 };
 
 const server = new ApolloServer({
@@ -40,6 +52,11 @@ const server = new ApolloServer({
     if (connection) {
       return {
         models,
+        loaders: {
+          user: new DataLoader(keys =>
+            loaders.user.batchUsers(keys, models),
+          ),
+        },
       };
     }
 
@@ -49,6 +66,11 @@ const server = new ApolloServer({
         models,
         me,
         secret: process.env.SECRET,
+          loaders: {
+            user: new DataLoader(keys =>
+              loaders.batchUsers(keys, models)
+            ),
+        },
       };
     }
   },
