@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const userApi = require('./api');
+const { user } = require('./api');
 
 describe('users', () => {
   describe('user(id: String!): User', () => {
@@ -10,11 +10,10 @@ describe('users', () => {
             id: '1',
             username: 'rwieruch',
             email: 'hello@robin.com',
-            role: 'ADMIN',
           },
         },
       };
-      const result = await userApi.user({ id: '1' });
+      const result = await user({ id: '1' });
       expect(result.data).to.eql(expectedResult);
     });
   });

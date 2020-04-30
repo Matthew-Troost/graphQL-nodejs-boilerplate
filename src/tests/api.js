@@ -9,11 +9,10 @@ const user = async variables =>
           id
           username
           email
-          role
         }
       }
     `,
         variables,
     });
 
-module.exports = user
+module.exports = {user}
