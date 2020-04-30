@@ -19,7 +19,16 @@ jobs:
       - node/with-cache:
           steps:
             - run: npm install
-            - run: npm test-server
+            - run: 
+                command: npm test-server
+                background: true
+            # wait for the server to start responding. We expect Bad Request 400 once it starts listening.
+            # so override the shell and have the last command be the : { null } command to force exit code 0.
+            - run:
+                shell: /bin/sh
+                command: |
+                  wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 10 http://localhost:8000/graphql
+                  :
             - run: npm test
 workflows:
     build-and-test:

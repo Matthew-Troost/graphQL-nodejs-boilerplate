@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index",
     "test-server": "TEST_DATABASE=circleci npm start",
-    "test": "mocha --require @babel/register 'src/**/*.spec.js'"
+    "test": "mocha --require @babel/register 'src/**/*.spec.js'",
+    "cover": "nyc --reporter=lcov --reporter=text mocha 'graphql/**/*.js'"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +23,7 @@
     "graphql-iso-date": "^3.6.1",
     "graphql-resolvers": "^0.4.2",
     "jsonwebtoken": "^8.5.1",
+    "nyc": "^15.0.1",
     "pg": "^8.0.3",
     "sequelize": "^5.21.7"
   },
