@@ -9,6 +9,7 @@ jobs:
         environment:
           POSTGRES_USER: circleci
           POSTGRES_DB: circleci
+          POSTGRES_PASSWORD: password
     environment:
       TEST_DATABASE: circleci
       POSTGRES_USER: circleci
