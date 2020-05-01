@@ -8,9 +8,10 @@ const schema = require('./graphql/schema');
 const resolvers = require('./graphql/resolvers');
 const { models, sequelize } = require('./graphql/models');
 const loaders = require('./graphql/loaders');
+
 const app = express();
 
-const getMe = async req => {
+const getMe = async (req) => {
   const token = req.headers['x-token'];
   if (token) {
     try {
@@ -31,13 +32,13 @@ const batchUsers = async (keys, models) => {
       },
     },
   });
-  return keys.map(key => users.find(user => user.id === key));
+  return keys.map((key) => users.find((user) => user.id === key));
 };
 
 const server = new ApolloServer({
   typeDefs: schema,
   resolvers,
-  formatError: error => {
+  formatError: (error) => {
     // remove the internal sequelize error message
     // leave only the important validation error
     const message = error.message
@@ -48,28 +49,24 @@ const server = new ApolloServer({
       message,
     };
   },
-  context: async ({ req, connection }) => { //this function is hit everytime a request is made to the server 
+  context: async ({ req, connection }) => { // this function is hit everytime a request is made to the server
     if (connection) {
       return {
         models,
         loaders: {
-          user: new DataLoader(keys =>
-            loaders.user.batchUsers(keys, models),
-          ),
+          user: new DataLoader((keys) => loaders.user.batchUsers(keys, models)),
         },
       };
     }
 
     if (req) {
-      const me = await getMe(req); //this still allows request with no token. Only throws error if token is invalid or expired
+      const me = await getMe(req); // this still allows request with no token. Only throws error if token is invalid or expired
       return {
         models,
         me,
         secret: process.env.SECRET,
-          loaders: {
-            user: new DataLoader(keys =>
-              loaders.batchUsers(keys, models)
-            ),
+        loaders: {
+          user: new DataLoader((keys) => loaders.batchUsers(keys, models)),
         },
       };
     }
@@ -88,8 +85,8 @@ sequelize.sync({ force: isTest }).then(async () => {
     seedDatabase();
   }
 
-  httpServer.listen({ port: 8000 }, () => {
-    console.log('Apollo Server on http://localhost:8000/graphql');
+  httpServer.listen({ port: isTest ? 5432 : 8000 }, () => {
+    console.log(`Apollo Server on http://localhost:${isTest ? '5432' : '8000'}/graphql`);
   });
 });
 
@@ -103,7 +100,7 @@ const seedDatabase = async () => {
       messages: [
         {
           text: 'Published the Road to learn React',
-          createdAt: new Date()
+          createdAt: new Date(),
         },
       ],
     },
@@ -119,11 +116,11 @@ const seedDatabase = async () => {
       messages: [
         {
           text: 'Happy to release ...',
-          createdAt: new Date()
+          createdAt: new Date(),
         },
         {
           text: 'Published a complete ...',
-          createdAt: new Date()
+          createdAt: new Date(),
         },
       ],
     },

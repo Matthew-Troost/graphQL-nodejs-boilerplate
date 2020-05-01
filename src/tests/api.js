@@ -1,9 +1,9 @@
 const axios = require('axios');
+
 const API_URL = 'http://localhost:8000/graphql';
 
-const user = async variables =>
-    axios.post(API_URL, {
-        query: `
+const user = async (variables) => axios.post(API_URL, {
+  query: `
       query ($id: ID!) {
         user(id: $id) {
           id
@@ -12,7 +12,7 @@ const user = async variables =>
         }
       }
     `,
-        variables,
-    });
+  variables,
+});
 
-module.exports = {user}
+module.exports = { user };
