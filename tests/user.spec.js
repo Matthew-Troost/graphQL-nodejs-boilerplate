@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const { expect } = require('chai');
 const { user } = require('./api');
 
