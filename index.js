@@ -85,7 +85,7 @@ sequelize.sync({ force: isTest }).then(async () => {
     seedDatabase();
   }
 
-  httpServer.listen({ port: isTest ? 5432 : 8000 }, () => {
+  httpServer.listen({ port: 8000 }, () => {
     console.log(`Apollo Server on http://localhost:${isTest ? '5432' : '8000'}/graphql`);
   });
 });
