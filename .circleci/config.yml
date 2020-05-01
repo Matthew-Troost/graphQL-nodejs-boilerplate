@@ -5,12 +5,15 @@ jobs:
   build:
     docker: 
       - image: circleci/node:12.0.0
+        environment:
+          DATABASE_HOST: 127.0.0.1
+          DATABASE_USER: root
       - image: postgres:9.6.2-alpine 
-    environment: 
-      TEST_DATABASE: circle_test
-      POSTGRES_USER: postgres 
-      POSTGRES_DB: circle_test 
-      workDir: ~repo 
+        environment: 
+          TEST_DATABASE: circle-test_test
+          POSTGRES_USER: root 
+          POSTGRES_DB: circle-test_test
+          workDir: ~repo 
     steps: 
       - checkout 
       - run: npm install
