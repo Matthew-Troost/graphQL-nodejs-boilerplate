@@ -2,7 +2,7 @@ version: 2.1
 orbs:
   node: circleci/node@1.1.6
 jobs:
-  build:
+  build_and_test:
     docker: 
       - image: circleci/node:12.0.0
         environment:
@@ -37,30 +37,7 @@ jobs:
             :
       - run: npm test
 
-  # test:
-  #   docker:
-  #     - image: circleci/node:12.0.0
-  #   environment:
-  #     TEST_DATABASE: circleci
-  #     POSTGRES_USER: circleci
-  #     POSTGRES_DB: circleci
-  #   steps:
-  #     - checkout
-  #     - node/with-cache:
-  #         steps:
-  #           - run: npm install
-  #           - run: 
-  #               command: npm start
-  #               background: true
-  #           # wait for the server to start responding. We expect Bad Request 400 once it starts listening.
-  #           # so override the shell and have the last command be the : { null } command to force exit code 0.
-  #           - run:
-  #               shell: /bin/sh
-  #               command: |
-  #                 wget --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 10 http://localhost:8000/graphql
-  #                 :
-  #           - run: npm test
 workflows:
     build-and-test:
       jobs:
-        - build
+        - build_and_test

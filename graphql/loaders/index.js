@@ -1,3 +1,3 @@
-const { batchUsers } = require('./user');
+const batchUsers = require('./user');
 
 module.exports = { batchUsers };
